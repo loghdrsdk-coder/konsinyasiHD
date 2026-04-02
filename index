@@ -1,0 +1,2216 @@
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>StokKonsinyasiHDRSDK</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-weight: 400;
+            line-height: 1.6;
+            letter-spacing: -0.01em;
+        }
+                    
+        /* Modern Gradient Backgrounds */
+        .main-content {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+        }
+        
+        /* Premium Button Styles */
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+        
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(116, 185, 255, 0.3);
+            border: none;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(116, 185, 255, 0.4);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.3);
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 107, 107, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
+            border: none;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
+        }
+        
+        /* Elegant Input Fields */
+        .input-focus {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid #e1e5e9;
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+        }
+        
+        .input-focus:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            background: rgba(255, 255, 255, 1);
+            transform: translateY(-1px);
+        }
+        
+        /* Modern Table Design */
+        .table-modern {
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+        }
+        
+        .table-modern th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            padding: 1rem;
+        }
+        
+        .table-modern tr:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            transform: scale(1.01);
+            transition: all 0.2s ease;
+        }
+        
+        /* Premium Card Design */
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Elegant Status Badges */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            font-size: 0.75rem;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Gradient Stats Cards */
+        .stats-card-blue {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
+        }
+        
+        .stats-card-green {
+            background: linear-gradient(135deg, #00b894 0%, #00a085 100%);
+            box-shadow: 0 8px 32px rgba(0, 184, 148, 0.3);
+        }
+        
+        .stats-card-purple {
+            background: linear-gradient(135deg, #a29bfe 0%, #6c5ce7 100%);
+            box-shadow: 0 8px 32px rgba(162, 155, 254, 0.3);
+        }
+        
+        .stats-card-orange {
+            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
+            box-shadow: 0 8px 32px rgba(253, 203, 110, 0.3);
+        }
+        
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .float-animation {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Glassmorphism Effect */
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Navigation Tab Styles */
+        .nav-tab {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-tab.active {
+            background: rgba(255, 255, 255, 0.25) !important;
+            color: white !important;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-1px);
+        }
+        
+        .nav-tab:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* HD Text Rendering */
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+            font-feature-settings: "kern" 1;
+        }
+        
+        /* Crisp Text */
+        * {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        /* High DPI Support */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .card, .sidebar, .table-modern {
+                border-width: 0.5px;
+            }
+        }
+        
+        /* Mobile Responsive Improvements */
+        @media (max-width: 1023px) {
+            /* Better mobile typography */
+            h1 { font-size: 1.5rem; line-height: 1.3; }
+            h2 { font-size: 1.25rem; line-height: 1.4; }
+            h3 { font-size: 1.125rem; line-height: 1.4; }
+            
+            /* Mobile form improvements */
+            .input-focus {
+                font-size: 16px; /* Prevents zoom on iOS */
+                min-height: 44px; /* Better touch targets */
+            }
+            
+            button {
+                min-height: 44px; /* Better touch targets */
+                font-weight: 600;
+            }
+            
+            /* Mobile table improvements */
+            .table-modern {
+                font-size: 0.75rem;
+            }
+            
+            .table-modern th,
+            .table-modern td {
+                padding: 0.5rem 0.25rem;
+            }
+            
+            /* Mobile navigation tabs */
+            .nav-tab {
+                font-size: 0.75rem;
+                padding: 0.5rem 0.75rem;
+            }
+            
+            .nav-tab span {
+                display: none;
+            }
+            
+            .nav-tab svg {
+                width: 1rem;
+                height: 1rem;
+            }
+        }
+        
+        /* Ultra HD Support */
+        @media (-webkit-min-device-pixel-ratio: 3), (min-resolution: 288dpi) {
+            body {
+                font-weight: 400;
+            }
+            
+            .font-bold {
+                font-weight: 700;
+            }
+            
+            .font-semibold {
+                font-weight: 600;
+            }
+        }
+        
+        /* Debug Info */
+        .debug-info {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            z-index: 1000;
+            max-width: 300px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        /* Smooth Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+        }
+        
+        /* Loading Animation */
+        .loading-spinner {
+            border: 3px solid rgba(102, 126, 234, 0.3);
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Notification Styles */
+        .notification {
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Form Section Headers */
+        .section-header {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Enhanced Modal */
+        .modal-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }#mainAppContent {
+        display: none;
+      }
+      /* Login container style */
+      #loginContainer {
+        height: 100vh;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Inter', sans-serif;
+      }
+      #loginForm {
+        background: white;
+        padding: 2rem;
+        border-radius: 1rem;
+        width: 320px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+      }
+      #loginForm h2 {
+        font-weight: 700;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #4c51bf;
+        text-align: center;
+      }
+      #loginForm label {
+        display: block;
+        margin-bottom: 0.25rem;
+        font-weight: 600;
+        color: #444;
+        font-size: 0.875rem;
+      }
+      #loginForm input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1.5px solid #a0aec0;
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+        font-size: 1rem;
+        transition: border-color 0.2s;
+      }
+      #loginForm input:focus {
+        border-color: #667eea;
+        outline: none;
+      }
+      #loginBtn {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        border: none;
+        width: 100%;
+        padding: 0.75rem;
+        font-weight: 700;
+        border-radius: 0.75rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+      }
+      #loginBtn:hover {
+        background: linear-gradient(135deg, #4c51bf 0%, #5a3d8f 100%);
+      }
+      #loginError {
+        color: #f56565;
+        font-weight: 600;
+        text-align: center;
+        margin-bottom: 1rem;
+        display: none;
+        font-size: 0.875rem;
+      }
+    </style>
+    <style>@view-transition { navigation: auto; }</style>
+</head>
+<body class="bg-gray-100">
+  
+<div id="loginContainer">
+  <form id="loginForm" autocomplete="off">
+    <h2>Login</h2>
+    <div id="loginError">Username atau password salah.</div>
+    <label for="username">Username</label>
+    <input id="username" type="text" autocomplete="username" required />
+    <label for="password">Password</label>
+    <input id="password" type="password" autocomplete="current-password" required />
+    <button type="submit" id="loginBtn">Masuk</button>
+  </form>
+</div>
+
+<!-- Main app content -->
+<div id="mainAppContent" class="min-h-screen relative">
+<!-- Debug Info -->
+<div id="debugInfo" class="debug-info hidden">
+    <div>
+        SDK Status: <span id="sdkStatus">Checking...</span>
+    </div>
+    <div>
+        Data Count: <span id="dataCount">0</span>
+    </div>
+    <div>
+        Last Action: <span id="lastAction">None</span>
+    </div>
+</div>
+<div class="min-h-screen relative">
+<!-- Main Content -->
+<div class="w-full overflow-auto relative">
+<!-- Header Title -->
+<div class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-lg">
+    <div class="px-4 lg:px-6 py-4">
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center space-x-3">
+                <div class="w-8 h-8 bg-white bg-opacity-20 rounded-xl flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold">Stok Konsinyasi HD RSDK</h1>
+                    <p class="text-white text-opacity-80 text-sm">Manajemen Stok HD RSDK</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="flex items-center space-x-3 text-xs text-white text-opacity-80">
+                    <div id="dbStatus" class="w-2 h-2 bg-red-500 rounded-full"></div><span id="dbStatusText" class="font-medium">Menghubungkan...</span>
+                </div>
+                <div class="hidden lg:flex items-center space-x-2 text-sm">
+                    <div class="bg-white bg-opacity-20 px-3 py-1 rounded-full"><span id="currentDateTime"></span>
+                    </div>
+                </div><button onclick="toggleDebug()" class="text-xs text-white text-opacity-60 hover:text-white transition-all duration-200 font-medium bg-white bg-opacity-10 px-3 py-1 rounded-full"> 🔧 Debug </button>
+            </div>
+        </div>
+        <!-- Navigation Tabs -->
+        <div class="flex flex-wrap gap-2">
+            <button onclick="showSection('inventory')" id="navInventory" class="nav-tab active flex items-center space-x-2 px-4 py-2 rounded-xl bg-white bg-opacity-20 text-white font-medium text-sm transition-all duration-200 hover:bg-opacity-30">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                </svg><span>Inventori</span> </button> 
+                <button onclick="showSection('search')" id="navSearch" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl bg-white bg-opacity-10 text-white text-opacity-70 hover:text-white font-medium text-sm transition-all duration-200 hover:bg-opacity-20">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                </svg><span>Pencarian</span> </button> 
+                <button onclick="showSection('stockTable')" id="navStockTable" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl bg-white bg-opacity-10 text-white text-opacity-70 hover:text-white font-medium text-sm transition-all duration-200 hover:bg-opacity-20">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M3 3a1 1 0 000 2h11a1 1 0 100-2H3zM3 7a1 1 0 000 2h7a1 1 0 100-2H3zM3 11a1 1 0 100 2h4a1 1 0 100-2H3zM15 8a1 1 0 10-2 0v5.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L15 13.586V8z" />
+                </svg><span>Tabel Stok</span> </button> 
+                <!-- NEW: Reports Tab -->
+                <button onclick="showSection('reports')" id="navReports" class="nav-tab flex items-center space-x-2 px-4 py-2 rounded-xl bg-white bg-opacity-10 text-white text-opacity-70 hover:text-white font-medium text-sm transition-all duration-200 hover:bg-opacity-20">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a2 2 0 012 2v8a2 2 0 01-2 2H6.5L3 17V6zm4 6a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
+                    </svg><span>Laporan</span>
+                </button>
+        </div>
+    </div>
+</div>
+<div class="p-4 lg:p-6 pt-6 lg:pt-6 relative min-h-screen">
+<!-- Background Pattern -->
+<div class="absolute inset-0 opacity-5 pointer-events-none">
+    <div class="absolute inset-0" style="background-image: radial-gradient(circle at 25% 25%, #667eea 0%, transparent 50%), radial-gradient(circle at 75% 75%, #764ba2 0%, transparent 50%);"></div>
+    <div class="absolute inset-0" style="background-image: repeating-linear-gradient(45deg, transparent, transparent 50px, rgba(102, 126, 234, 0.03) 50px, rgba(102, 126, 234, 0.03) 100px);"></div>
+</div>
+<!-- Loading State -->
+<div id="loadingState" class="fixed inset-0 bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 bg-opacity-95 backdrop-blur-lg flex items-center justify-center z-50">
+    <div class="text-center">
+        <div class="relative">
+            <div class="loading-spinner w-16 h-16 mx-auto mb-6"></div>
+            <div class="absolute inset-0 w-16 h-16 mx-auto">
+                <div class="w-4 h-4 bg-white rounded-full absolute top-0 left-1/2 transform -translate-x-1/2 animate-pulse"></div>
+            </div>
+        </div>
+        <div class="glass rounded-2xl p-6 max-w-sm">
+            <h3 class="text-white text-xl font-bold mb-2">Menghubungkan ke Database</h3>
+            <p class="text-white text-opacity-80 text-sm">Mohon tunggu sebentar...</p>
+        </div>
+    </div>
+</div>
+<main>
+<!-- Inventory Section -->
+<div id="inventorySection" class="section">
+    <!-- Form Input Barang Baru -->
+    <section class="card p-8 mb-8">
+        <div class="section-header rounded-2xl p-4 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center space-x-4">
+                <div class="w-12 h-12 stats-card-blue rounded-2xl flex items-center justify-center text-white shadow-lg">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div><span class="block">Tambah Barang Baru</span> <span class="text-sm font-normal text-gray-600 mt-1">Masukkan data inventori baru ke sistem</span>
+                </div></h2>
+        </div>
+        <form id="addItemForm" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-3"><label for="itemName" class="block text-sm font-semibold text-gray-700">Nama Barang</label> <input type="text" id="itemName" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <div class="space-y-3"><label for="itemCode" class="block text-sm font-semibold text-gray-700">Kode Barang</label> <input type="text" id="itemCode" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white font-mono text-base">
+            </div>
+            <div class="space-y-3"><label for="itemLocation" class="block text-sm font-semibold text-gray-700">Lokasi Penyimpanan</label> <select id="itemLocation" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base"> <option value="">Pilih Lokasi</option> <option value="Depo">Depo</option> <option value="GUDANG FARMASI">GUDANG FARMASI</option> <option value="HD">HD</option>> </select>
+            </div>
+            <div class="space-y-3"><label for="initialStock" class="block text-sm font-semibold text-gray-700">Stok Awal</label> <input type="number" id="initialStock" required min="0" value="0" class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <div class="space-y-3"><label for="itemVendor" class="block text-sm font-semibold text-gray-700">Vendor</label> <select id="itemVendor" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base"> <option value="">Pilih Vendor</option> <option value="SINAR RODA UTAMA .PT">SINAR RODA UTAMA .OT</option> <option value="PARIT PADANG GLOBAL .PT">PARIT PADANG GLOBAL</option> </select>
+            </div>
+            <div class="lg:col-span-2 pt-6"><button type="submit" id="addItemBtn" class="btn-primary w-full text-white font-semibold py-4 px-6 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed text-base shadow-lg"> ✨ Tambah Barang Baru </button>
+            </div>
+        </form>
+    </section>
+    <!-- Daftar Barang -->
+    <section class="card p-8">
+        <div class="section-header rounded-2xl p-4 mb-6">
+            <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+                <h2 class="text-2xl font-bold text-gray-800 flex items-center space-x-4">
+                    <div class="w-12 h-12 stats-card-green rounded-2xl flex items-center justify-center text-white shadow-lg">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+                        </svg>
+                    </div>
+                    <div><span class="block">Daftar Inventori</span> <span class="text-sm font-normal text-gray-600 mt-1">Kelola dan pantau stok barang</span>
+                    </div></h2>
+                <div class="relative lg:w-80">
+                    <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                        <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
+                        </svg></div><input type="text" id="inventorySearchInput" placeholder="🔍 Cari barang, kode, atau lokasi..." class="input-focus w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+                </div>
+            </div>
+        </div>
+        <div id="inventoryList" class="space-y-4">
+            <!-- Items will be added here dynamically -->
+        </div>
+        <div id="emptyState" class="text-center py-12 text-gray-400">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                📦
+            </div>
+            <p class="font-medium">Belum ada barang</p>
+            <p class="text-sm">Silakan tambahkan barang baru di atas</p>
+        </div>
+        <div id="noSearchResults" class="text-center py-12 text-gray-400 hidden">
+            <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                🔍
+            </div>
+            <p class="font-medium">Tidak ada barang yang sesuai</p><button onclick="document.getElementById('inventorySearchInput').value=''; filterInventory()" class="mt-2 text-blue-600 hover:text-blue-800 underline"> Tampilkan semua barang </button>
+        </div>
+    </section>
+</div>
+<!-- Search Section -->
+<div id="searchSection" class="section hidden">
+    <section class="card p-6">
+        <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2"><span class="w-6 h-6 bg-yellow-600 rounded-lg flex items-center justify-center text-white text-sm">🔍</span> <span>Pencarian Barang</span></h2>
+        <div class="mb-6"><input type="text" id="searchInput" placeholder="Cari berdasarkan nama barang atau kode..." class="input-focus w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none text-lg bg-white">
+        </div>
+        <div id="searchResults" class="space-y-4">
+            <div class="text-center py-12 text-gray-400">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                    🔍
+                </div>
+                <p class="font-medium">Masukkan kata kunci untuk mencari</p>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Stock Table Section -->
+<div id="stockTableSection" class="section hidden">
+    <section class="card p-6">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <h2 class="text-xl font-bold text-gray-800 flex items-center space-x-2"><span class="w-6 h-6 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm">📊</span> <span>Tabel Total Stok</span></h2>
+            <div class="flex gap-3"><select id="sortBy" class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white"> <option value="name">Urutkan: Nama</option> <option value="code">Urutkan: Kode</option> <option value="stock">Urutkan: Stok</option> <option value="location">Urutkan: Lokasi</option> </select> <button id="sortOrder" onclick="toggleSortOrder()" class="px-3 py-2 bg-white hover:bg-gray-50 rounded-md text-sm font-medium border border-gray-300"> ⬆️ A-Z </button>
+            </div>
+        </div>
+        <!-- NEW SEARCH INPUT FOR STOCK TABLE -->
+        <div class="mb-6">
+            <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <input type="text" id="stockTableSearch" placeholder="🔍 Cari kode, nama, atau lokasi..." class="input-focus w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+        </div>
+        <!-- END NEW SEARCH INPUT -->
+        <div class="overflow-x-auto">
+            <table class="table-modern w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left">Kode Barang</th>
+                        <th class="px-4 py-3 text-left">Nama Barang</th>
+                        <th class="px-4 py-3 text-left">Lokasi</th>
+                        <th class="px-4 py-3 text-center">Stok</th>
+                        <th class="px-4 py-3 text-center">Status</th>
+                        <th class="px-4 py-3 text-center">Aksi</th> <!-- New column for actions -->
+                    </tr>
+                </thead>
+                <tbody id="stockTableBody" class="bg-white">
+                    <!-- Table rows will be added here -->
+                </tbody>
+            </table>
+            <div id="stockTableEmpty" class="text-center py-12 text-gray-400 hidden bg-white">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                    📊
+                </div>
+                <p class="font-medium">Belum ada data stok</p>
+            </div>
+        </div>
+    </section>
+</div>
+
+<!-- NEW: Reports Section -->
+<div id="reportsSection" class="section hidden">
+    <section class="card p-8">
+        <div class="section-header rounded-2xl p-4 mb-6">
+            <h2 class="text-2xl font-bold text-gray-800 flex items-center space-x-4">
+                <div class="w-12 h-12 stats-card-purple rounded-2xl flex items-center justify-center text-white shadow-lg">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a2 2 0 012 2v8a2 2 0 01-2 2H6.5L3 17V6zm4 6a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0zm4 0a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
+                    </svg>
+                </div>
+                <div><span class="block">Laporan Penggunaan</span> <span class="text-sm font-normal text-gray-600 mt-1">Lihat riwayat transaksi dan ringkasan stok</span>
+                </div>
+            </h2>
+        </div>
+
+        <!-- Date Range Filter -->
+        <div class="mb-6 flex flex-col md:flex-row gap-4 items-end">
+            <div class="flex-1 w-full">
+                <label for="reportDateRange" class="block text-sm font-semibold text-gray-700 mb-1">Pilih Periode Laporan:</label>
+                <select id="reportDateRange" class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+                    <option value="last7days">7 Hari Terakhir</option>
+                    <option value="last30days">30 Hari Terakhir</option>
+                    <option value="thisMonth">Bulan Ini</option>
+                    <option value="lastMonth">Bulan Lalu</option>
+                    <option value="allTime">Semua Waktu</option>
+                </select>
+            </div>
+            <div class="flex-1 w-full">
+                <label for="reportStartDate" class="block text-sm font-semibold text-gray-700 mb-1">Dari Tanggal:</label>
+                <input type="date" id="reportStartDate" class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <div class="flex-1 w-full">
+                <label for="reportEndDate" class="block text-sm font-semibold text-gray-700 mb-1">Sampai Tanggal:</label>
+                <input type="date" id="reportEndDate" class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <button onclick="renderReportsSection()" class="btn-primary text-white font-semibold py-3 px-6 rounded-xl shadow-lg w-full md:w-auto">
+                Tampilkan Laporan
+            </button>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="card p-6 stats-card-blue text-white">
+                <p class="text-sm text-opacity-80 mb-2">Total Barang Masuk</p>
+                <p id="totalInflow" class="text-3xl font-bold">0</p>
+            </div>
+            <div class="card p-6 stats-card-orange text-white">
+                <p class="text-sm text-opacity-80 mb-2">Total Barang Keluar</p>
+                <p id="totalOutflow" class="text-3xl font-bold">0</p>
+            </div>
+            <!-- Removed: Average Daily Outflow (Global) -->
+        </div>
+
+        <!-- Average Outflow Per Item Table -->
+        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2 mt-8">
+            <span class="w-6 h-6 bg-yellow-600 rounded-lg flex items-center justify-center text-white text-sm">📈</span> 
+            <span>Rata-rata Pengeluaran per Barang</span>
+        </h3>
+        <!-- NEW: Search and Sort for Average Outflow Table -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-4">
+            <div class="relative flex-1">
+                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+                    <svg class="h-5 w-5 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
+                    </svg>
+                </div>
+                <input type="text" id="averageOutflowSearchInput" placeholder="🔍 Cari barang atau kode..." class="input-focus w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <div class="flex gap-3">
+                <select id="averageOutflowSortBy" class="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white">
+                    <option value="name">Urutkan: Nama</option>
+                    <option value="code">Urutkan: Kode</option>
+                    <option value="totalOut">Urutkan: Total Keluar</option>
+                </select>
+                <button id="averageOutflowSortOrder" onclick="toggleAverageOutflowSortOrder()" class="px-3 py-2 bg-white hover:bg-gray-50 rounded-md text-sm font-medium border border-gray-300"> ⬆️ A-Z </button>
+            </div>
+        </div>
+        <!-- END NEW: Search and Sort -->
+        <div class="overflow-x-auto mb-8">
+            <table class="table-modern w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left">Kode Barang</th>
+                        <th class="px-4 py-3 text-left">Nama Barang</th>
+                        <th class="px-4 py-3 text-center">Total Keluar</th>
+                        <!-- Removed: Rata-rata Harian -->
+                    </tr>
+                </thead>
+                <tbody id="averageOutflowPerItemBody" class="bg-white">
+                    <!-- Average outflow per item rows will be added here -->
+                </tbody>
+            </table>
+            <div id="noAverageOutflow" class="text-center py-12 text-gray-400 hidden bg-white">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                    📉
+                </div>
+                <p class="font-medium">Tidak ada data pengeluaran barang dalam periode ini.</p>
+            </div>
+        </div>
+
+        <!-- Transaction History Table -->
+        <h3 class="text-xl font-bold text-gray-800 mb-4 flex items-center space-x-2">
+            <span class="w-6 h-6 bg-indigo-600 rounded-lg flex items-center justify-center text-white text-sm">📜</span> 
+            <span>Riwayat Transaksi</span>
+        </h3>
+        <div class="overflow-x-auto">
+            <table class="table-modern w-full">
+                <thead>
+                    <tr>
+                        <th class="px-4 py-3 text-left">Tanggal</th>
+                        <th class="px-4 py-3 text-left">Nama Barang</th>
+                        <th class="px-4 py-3 text-left">Kode Barang</th>
+                        <th class="px-4 py-3 text-left">Lokasi</th>
+                        <th class="px-4 py-3 text-center">Tipe Transaksi</th>
+                        <th class="px-4 py-3 text-center">Jumlah</th>
+                        <th class="px-4 py-3 text-left">Catatan</th>
+                    </tr>
+                </thead>
+                <tbody id="transactionHistoryBody" class="bg-white">
+                    <!-- Transaction rows will be added here -->
+                </tbody>
+            </table>
+            <div id="noTransactions" class="text-center py-12 text-gray-400 hidden bg-white">
+                <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                    🚫
+                </div>
+                <p class="font-medium">Tidak ada transaksi dalam periode ini.</p>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- END NEW: Reports Section -->
+
+</main>
+</div>
+</div>
+<!-- Modal untuk Transaksi -->
+<div id="transactionModal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="modal-content rounded-3xl p-8 max-w-md w-full">
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 stats-card-green rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <h3 id="modalTitle" class="text-2xl font-bold text-gray-800"></h3>
+            <p class="text-gray-600 text-sm mt-2">Masukkan jumlah barang yang akan ditambahkan</p>
+        </div>
+        <form id="transactionForm">
+            <div class="mb-6 space-y-3"><label for="transactionAmount" class="block text-sm font-semibold text-gray-700">Jumlah Barang</label> <input type="number" id="transactionAmount" required min="1" class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <div class="mb-6 space-y-3"><label for="transactionNote" class="block text-sm font-semibold text-gray-700">Catatan (Opsional)</label> <input type="text" id="transactionNote" placeholder="Contoh: Pengiriman dari supplier" class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <div class="flex gap-4"><button type="button" id="cancelTransaction" class="btn-secondary flex-1 text-white font-semibold py-3 px-4 rounded-xl"> ❌ Batal </button> <button type="submit" id="confirmTransaction" class="btn-primary flex-1 text-white font-semibold py-3 px-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"> ✅ Konfirmasi </button>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- Modal untuk Pindah Barang -->
+<div id="moveItemModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+    <div class="card p-6 max-w-md w-full">
+        <h3 class="text-xl font-bold text-gray-800 mb-4">Pindah Barang</h3>
+        <form id="moveItemForm">
+            <div class="mb-4 space-y-2"><label for="moveQuantity" class="block text-sm font-medium text-gray-700">Jumlah yang Dipindah</label> <input type="number" id="moveQuantity" required min="1" class="input-focus w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none bg-white">
+            </div>
+            <div class="mb-4 space-y-2"><label for="moveToLocation" class="block text-sm font-medium text-gray-700">Pindah ke Lokasi</label> <select id="moveToLocation" required class="input-focus w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none bg-white"> <option value="">Pilih Lokasi Tujuan</option> <option value="Depo">Depo</option> <option value="GUDANG FARMASI">GUDANG FARMASI</option> <option value="HD">HD</option> </select>
+            </div>
+            <div class="mb-4 space-y-2"><label for="moveNote" class="block text-sm font-medium text-gray-700">Catatan (Opsional)</label> <input type="text" id="moveNote" placeholder="Alasan pemindahan" class="input-focus w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none bg-white">
+            </div>
+            <div class="flex gap-4"><button type="button" id="cancelMove" class="btn-secondary flex-1 text-white font-medium py-2 px-4 rounded-md"> Batal </button> <button type="submit" id="confirmMove" class="btn-primary flex-1 text-white font-medium py-2 px-4 rounded-md disabled:opacity-50 disabled:cursor-not-allowed"> Pindah </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Modal untuk Ganti Nama Barang -->
+<div id="renameItemModal" class="hidden fixed inset-0 bg-black bg-opacity-60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="modal-content rounded-3xl p-8 max-w-md w-full">
+        <div class="text-center mb-6">
+            <div class="w-16 h-16 stats-card-blue rounded-2xl flex items-center justify-center text-white mx-auto mb-4">
+                <svg class="w-8 h-8" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M13.586 3.586a2 2 0 112.828 2.828l-7.667 7.667a1 1 0 01-.39.242l-3 1a1 1 0 01-1.21-.97l1-3a1 1 0 01.242-.39l7.667-7.667zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+                </svg>
+            </div>
+            <h3 id="renameModalTitle" class="text-2xl font-bold text-gray-800">Ganti Nama Barang</h3>
+            <p class="text-gray-600 text-sm mt-2">Masukkan nama baru untuk barang ini.</p>
+        </div>
+        <form id="renameItemForm">
+            <div class="mb-6 space-y-3">
+                <label for="newItemName" class="block text-sm font-semibold text-gray-700">Nama Baru</label> 
+                <input type="text" id="newItemName" required class="input-focus w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none bg-white text-base">
+            </div>
+            <div class="flex gap-4">
+                <button type="button" id="cancelRename" class="btn-secondary flex-1 text-white font-semibold py-3 px-4 rounded-xl"> ❌ Batal </button> 
+                <button type="submit" id="confirmRename" class="btn-primary flex-1 text-white font-semibold py-3 px-4 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"> ✅ Konfirmasi </button>
+            </div>
+        </form>
+    </div>
+</div>
+  <script>
+    // LOGIN SCRIPT
+    const VALID_USERNAME = 'farmasi';
+    const VALID_PASSWORD = '12345';
+
+    const loginForm = document.getElementById('loginForm');
+    const loginError = document.getElementById('loginError');
+    const loginContainer = document.getElementById('loginContainer');
+    const mainAppContent = document.getElementById('mainAppContent');
+
+    loginForm.addEventListener('submit', function(e){
+      e.preventDefault();
+      const username = document.getElementById('username').value.trim();
+      const password = document.getElementById('password').value;
+
+      if(username === VALID_USERNAME && password === VALID_PASSWORD){
+        loginError.style.display = 'none';
+        loginContainer.style.display = 'none';
+        mainAppContent.style.display = 'block';
+      }
+      else {
+        loginError.style.display = 'block';
+      }
+    });
+
+    // --- Firebase config and full app logic below ---
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAO5XoyD6vQySA2MHEGSyoLnB4DVRCaiuU",
+      authDomain: "konsinyasihd.firebaseapp.com",
+      projectId: "konsinyasihd",
+      storageBucket: "konsinyasihd.firebasestorage.app",
+      messagingSenderId: "437467739578",
+      appId: "1:437467739578:web:070222bb2ceaaeddba9983"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    // Global variables
+    let allData = []; // Combined inventory and transaction data for CSV export
+    let inventory = []; // Processed inventory items with current stock
+    let currentTransaction = null;
+    let currentMoveItem = null;
+    let currentRenameItem = null; // New global variable for rename feature
+    let sortAscending = true;
+    let currentSortBy = 'name'; // For Stock Table
+    let isLoading = false;
+    let sdkInitialized = false;
+
+    // Reports specific variables
+    let reportsSortBy = 'name'; // For Average Outflow Per Item Table
+    let reportsSortOrder = 'asc'; // For Average Outflow Per Item Table
+    let reportsSearchTerm = ''; // For Average Outflow Per Item Table
+
+    // Debug functions
+    function toggleDebug() {
+        const debugInfo = document.getElementById('debugInfo');
+        debugInfo.classList.toggle('hidden');
+    }
+
+    function updateDebugInfo(status, dataCount, lastAction) {
+        document.getElementById('sdkStatus').textContent = status;
+        document.getElementById('dataCount').textContent = dataCount;
+        document.getElementById('lastAction').textContent = lastAction;
+    }
+
+    function updateDatabaseStatus(connected, message) {
+        const statusDot = document.getElementById('dbStatus');
+        const statusText = document.getElementById('dbStatusText');
+        
+        if (connected) {
+            statusDot.className = 'w-2 h-2 bg-green-500 rounded-full animate-pulse';
+            statusText.textContent = message || 'Database Aktif';
+        } else {
+            statusDot.className = 'w-2 h-2 bg-red-500 rounded-full';
+            statusText.textContent = message || 'Database Terputus';
+        }
+    }
+
+    // Initialize Firebase connection and setup real-time listeners
+    async function initializeFirebase() {
+        try {
+            console.log('🔄 Menginisialisasi Firebase...');
+            updateDebugInfo('Connecting...', 0, 'Initializing');
+            updateDatabaseStatus(false, 'Menghubungkan...'); // Explicitly set connecting status
+
+            // Add a timeout for the connection attempt
+            const timeoutPromise = new Promise((resolve, reject) => 
+                setTimeout(() => reject(new Error('Firebase connection timed out after 10 seconds. Please check your network and Firebase project configuration (API Key, Project ID, Security Rules).')), 10000) // 10 seconds timeout
+            );
+
+            // Test connection by attempting to fetch a single document from a 'test' collection.
+            // This collection doesn't need to exist. A permission denied or not found error
+            // indicates a successful connection attempt to the Firestore service.
+            await Promise.race([
+                db.collection('test').limit(1).get(),
+                timeoutPromise
+            ]);
+            
+            console.log('✅ Firebase berhasil diinisialisasi!');
+            sdkInitialized = true;
+            updateDebugInfo('Connected', 0, 'Firebase initialized');
+            updateDatabaseStatus(true, 'Connected');
+            
+            setupRealtimeListeners();
+            hideLoadingState();
+            
+        } catch (error) {
+            console.error('❌ Kesalahan inisialisasi Firebase:', error);
+            sdkInitialized = false; // Ensure SDK is marked as not initialized on error
+            updateDebugInfo('Error', 0, error.message);
+            updateDatabaseStatus(false, `Error: ${error.message}`);
+            hideLoadingState();
+            showNotification(`❌ Gagal terhubung ke Firebase: ${error.message}.`, 'error');
+        }
+    }
+
+    function setupRealtimeListeners() {
+        if (!sdkInitialized) {
+            console.warn('Firebase SDK not initialized, skipping real-time listeners setup.');
+            return;
+        }
+        // Listener for inventory collection
+        db.collection('inventory').onSnapshot(inventorySnapshot => {
+            const inventoryData = inventorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            // Listener for transactions collection
+            db.collection('transactions').onSnapshot(transactionSnapshot => {
+                const transactionData = transactionSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                allData = [...inventoryData, ...transactionData];
+                processDataFromDatabase(allData);
+                // Hanya render bagian yang aktif setelah data diperbarui
+                renderActiveSection(); 
+                updateDebugInfo('Connected', allData.length, 'Real-time data updated');
+                updateDatabaseStatus(true, `${allData.length} records`);
+            }, error => {
+                console.error('❌ Error fetching transactions:', error);
+                updateDebugInfo('Error', allData.length, `Transaction listener error: ${error.message}`);
+                updateDatabaseStatus(false, `Error: ${error.message}`);
+                showNotification(`❌ Gagal memuat transaksi: ${error.message}. Periksa aturan keamanan Firestore.`, 'error');
+            });
+        }, error => {
+            console.error('❌ Error fetching inventory:', error);
+            updateDebugInfo('Error', allData.length, `Inventory listener error: ${error.message}`);
+            updateDatabaseStatus(false, `Error: ${error.message}`);
+            showNotification(`❌ Gagal memuat inventori: ${error.message}. Periksa aturan keamanan Firestore.`, 'error');
+        });
+    }
+
+    // Process data from database
+    function processDataFromDatabase(data) {
+        inventory = [];
+        
+        const inventoryMap = new Map();
+        const transactionHistoryMap = new Map(); // To store transaction history per item_id
+
+        // First, process all inventory records to get current stock
+        data.forEach(record => {
+            if (record.type === 'inventory') {
+                const key = `${record.code}-${record.location}`;
+                inventoryMap.set(key, {
+                    id: record.id,
+                    name: record.name,
+                    code: record.code,
+                    location: record.location,
+                    stock: record.stock,
+                    vendor: record.vendor || '',
+                    history: [] // History will be populated from transactions
+                });
+            } else if (record.type === 'transaction') {
+                if (!transactionHistoryMap.has(record.item_id)) {
+                    transactionHistoryMap.set(record.item_id, []);
+                }
+                transactionHistoryMap.get(record.item_id).push({
+                    type: record.transaction_type,
+                    amount: record.amount,
+                    note: record.note,
+                    date: record.date
+                });
+            }
+        });
+        
+        // Now, add transaction history to the corresponding inventory items
+        inventoryMap.forEach(item => {
+            if (transactionHistoryMap.has(item.id)) {
+                item.history = transactionHistoryMap.get(item.id).sort((a, b) => new Date(a.date) - new Date(b.date));
+            }
+        });
+
+        inventory = Array.from(inventoryMap.values());
+        console.log(`📦 Processed ${inventory.length} inventory items`);
+    }
+
+    // Save inventory item to Firebase
+    async function saveInventoryItem(item) {
+        if (isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+        
+        setLoadingState(true);
+        try {
+            console.log('💾 Saving to Firebase:', item.name);
+            
+            const dataToSave = {
+                type: 'inventory',
+                name: item.name,
+                code: item.code,
+                location: item.location,
+                stock: item.stock,
+                vendor: item.vendor || '',
+                date: new Date().toISOString()
+            };
+            
+            await db.collection('inventory').add(dataToSave);
+            
+            console.log('✅ Saved to Firebase');
+            showNotification('✅ Barang berhasil disimpan!', 'success');
+            
+        } catch (error) {
+            console.error('❌ Save error:', error);
+            showNotification(`❌ Gagal menyimpan: ${error.message}`, 'error');
+        } finally {
+            setLoadingState(false);
+        }
+    }
+
+    function exportAllDataToCSV() {
+        if (allData.length === 0) {
+            showNotification('⚠️ Tidak ada data untuk diekspor!', 'error');
+            return;
+        }
+        try {
+            let csvContent = '\uFEFF'; // BOM untuk UTF-8
+            
+            // Header for combined inventory and transaction data
+            csvContent += 'Type,ID,Nama Barang,Kode Barang,Lokasi,Stok,Vendor,Tanggal Update/Transaksi,Tipe Transaksi,Jumlah Transaksi,Catatan Transaksi\n';
+            
+            // Data
+            allData.forEach(record => {
+                let row = [];
+                if (record.type === 'inventory') {
+                    row = [
+                        record.type,
+                        record.id,
+                        record.name || '',
+                        record.code || '',
+                        record.location || '',
+                        record.stock || 0,
+                        record.vendor || '',
+                        record.date ? new Date(record.date).toLocaleDateString('id-ID') : '',
+                        '', // Tipe Transaksi
+                        '', // Jumlah Transaksi
+                        ''  // Catatan Transaksi
+                    ];
+                } else if (record.type === 'transaction') {
+                    const inventoryItem = inventory.find(item => item.id === record.item_id);
+                    row = [
+                        record.type,
+                        record.item_id,
+                        inventoryItem ? inventoryItem.name : 'N/A',
+                        inventoryItem ? inventoryItem.code : 'N/A',
+                        inventoryItem ? inventoryItem.location : 'N/A',
+                        '', // Stok (not directly from transaction)
+                        inventoryItem ? inventoryItem.vendor : 'N/A',
+                        record.date ? new Date(record.date).toLocaleDateString('id-ID') : '',
+                        record.transaction_type || '',
+                        record.amount || 0,
+                        record.note || ''
+                    ];
+                }
+                
+                row = row.map(field => `"${String(field).replace(/"/g, '""')}"`); // Handle commas and quotes
+                csvContent += row.join(',') + '\n';
+            });
+            
+            // Download
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement("a");
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute("href", url);
+            link.setAttribute("download", `Database_Lengkap_${new Date().toISOString().slice(0, 10)}.csv`);
+            
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            URL.revokeObjectURL(url);
+            showNotification('✅ Semua data berhasil diekspor ke CSV!', 'success');
+            
+        } catch (error) {
+            console.error('Export error:', error);
+            showNotification('❌ Gagal mengekspor data. Silakan coba lagi.', 'error');
+        }
+    }
+
+    // Update inventory item in Firebase (now accepts an object of updates)
+    async function updateInventoryItem(itemId, updates) {
+        if (isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+        
+        setLoadingState(true);
+        try {
+            console.log('🔄 Updating inventory item:', itemId, updates);
+            
+            const docRef = db.collection('inventory').doc(itemId);
+            await docRef.update({
+                ...updates,
+                date: new Date().toISOString() // Always update date
+            });
+            
+            console.log('✅ Inventory item updated successfully');
+            showNotification('✅ Barang berhasil diperbarui!', 'success'); // Added notification here
+            
+        } catch (error) {
+            console.error('❌ Update inventory error:', error);
+            showNotification(`❌ Gagal memperbarui: ${error.message}`, 'error');
+        } finally {
+            setLoadingState(false);
+        }
+    }
+
+    // Delete inventory item from Firebase
+    async function deleteInventoryItem(itemId) {
+        if (isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+        
+        setLoadingState(true);
+        try {
+            console.log('🗑️ Deleting inventory item:', itemId);
+            
+            const docRef = db.collection('inventory').doc(itemId);
+            await docRef.delete();
+            
+            console.log('✅ Inventory item deleted successfully');
+            showNotification('✅ Barang berhasil dihapus!', 'success');
+            
+        } catch (error) {
+            console.error('❌ Delete inventory error:', error);
+            showNotification(`❌ Gagal menghapus: ${error.message}`, 'error');
+        } finally {
+            setLoadingState(false);
+        }
+    }
+
+    // Save transaction to Firebase
+    async function saveTransaction(itemId, type, amount, note) {
+        if (isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+        
+        setLoadingState(true);
+        try {
+            console.log('📊 Saving transaction:', type, amount);
+            
+            const dataToSave = {
+                type: 'transaction',
+                item_id: itemId,
+                transaction_type: type,
+                amount: amount,
+                note: note,
+                date: new Date().toISOString()
+            };
+            
+            await db.collection('transactions').add(dataToSave);
+            
+            console.log('✅ Transaction saved successfully');
+            // No specific notification here, as updateInventoryItem already shows one.
+            
+        } catch (error) {
+            console.error('❌ Save transaction error:', error);
+            showNotification(`❌ Gagal menyimpan transaksi: ${error.message}`, 'error');
+        } finally {
+            setLoadingState(false);
+        }
+    }
+
+    // Loading state management
+    function setLoadingState(loading) {
+        isLoading = loading;
+        const buttons = document.querySelectorAll('button[type="submit"], #addItemBtn, .btn-primary, .btn-secondary, .btn-danger, .btn-success');
+        buttons.forEach(btn => {
+            if (btn.id !== 'debugButton') { // Exclude debug button
+                btn.disabled = loading;
+                btn.classList.toggle('opacity-50', loading);
+                btn.classList.toggle('cursor-not-allowed', loading);
+            }
+        });
+    }
+
+    function hideLoadingState() {
+        document.getElementById('loadingState').classList.add('hidden');
+    }
+
+    // Navigation functions
+    function showSection(sectionName) {
+        // Hide all sections
+        document.querySelectorAll('.section').forEach(section => {
+            section.classList.add('hidden');
+        });
+        
+        // Remove active class from all nav tabs
+        document.querySelectorAll('.nav-tab').forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.add('text-white', 'text-opacity-70');
+            btn.classList.remove('text-white');
+            btn.style.background = 'rgba(255, 255, 255, 0.1)';
+        });
+        
+        // Show selected section
+        document.getElementById(sectionName + 'Section').classList.remove('hidden');
+        
+        // Activate selected nav tab
+        const activeBtn = document.getElementById('nav' + sectionName.charAt(0).toUpperCase() + sectionName.slice(1));
+        activeBtn.classList.add('active');
+        activeBtn.classList.remove('text-opacity-70');
+        activeBtn.classList.add('text-white');
+        
+        // Render only the active section when switching tabs
+        renderActiveSection();
+    }
+
+    // Add new item
+    document.getElementById('addItemForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+        
+        const itemName = document.getElementById('itemName').value;
+        const itemCode = document.getElementById('itemCode').value.toUpperCase();
+        const itemLocation = document.getElementById('itemLocation').value;
+        const initialStock = parseInt(document.getElementById('initialStock').value);
+        const itemVendor = document.getElementById('itemVendor').value;
+        
+        // Check if item with same code and location already exists
+        const existingItem = inventory.find(item => 
+            item.code === itemCode && item.location === itemLocation
+        );
+        
+        if (existingItem) {
+            showNotification('⚠️ Barang dengan kode dan lokasi yang sama sudah ada!', 'error');
+            return;
+        }
+        
+        // Create new item
+        const newItem = {
+            id: Date.now().toString(), // Temporary ID, Firebase will assign a real one
+            name: itemName,
+            code: itemCode,
+            location: itemLocation,
+            stock: initialStock,
+            vendor: itemVendor,
+            history: []
+        };
+
+        await saveInventoryItem(newItem);
+        this.reset();
+    });
+
+    // Filter inventory based on search
+    function filterInventory() {
+        const searchTerm = document.getElementById('inventorySearchInput').value.toLowerCase();
+        
+        let filteredInventory = inventory;
+        if (searchTerm) {
+            filteredInventory = inventory.filter(item => 
+                item.name.toLowerCase().includes(searchTerm) || 
+                item.code.toLowerCase().includes(searchTerm) ||
+                item.location.toLowerCase().includes(searchTerm)
+            );
+        }
+        
+        renderInventory(filteredInventory, searchTerm);
+    }
+
+    // Render inventory list
+    function renderInventory(itemsToShow = inventory, searchTerm = '') {
+    const listContainer = document.getElementById('inventoryList');
+    const emptyState = document.getElementById('emptyState');
+    const noSearchResults = document.getElementById('noSearchResults');
+
+    emptyState.classList.add('hidden');
+    noSearchResults.classList.add('hidden');
+
+    if (inventory.length === 0) {
+        listContainer.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+    }
+
+    if (searchTerm && itemsToShow.length === 0) {
+        listContainer.innerHTML = '';
+        noSearchResults.classList.remove('hidden');
+        return;
+    }
+
+    listContainer.innerHTML = itemsToShow.map(item => `
+        <div class="card p-4">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-gray-800 mb-2">${item.name}</h3>
+                    <div class="space-y-1 text-sm text-gray-600">
+                        <p><span class="font-medium">Kode:</span> <span class="font-mono font-bold text-gray-800">${item.code}</span></p>
+                        <p><span class="font-medium">Lokasi:</span> ${item.location}</p>
+                        <p><span class="font-medium">Vendor:</span> ${item.vendor || '-'}</p>  <!-- Vendor ditambahkan -->
+                    </div>
+                    <div class="mt-2">
+                        <span class="status-badge ${item.stock < 2 ? 'bg-red-100 text-red-800' : item.stock <= 5 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}">
+                            <span class="font-bold">${item.stock}</span> unit
+                            ${item.stock < 2 ? '⚠️ KRITIS' : item.stock <= 5 ? '⚠️ RENDAH' : '✅ AMAN'}
+                        </span>
+                    </div>
+                </div>
+                <div class="flex flex-wrap gap-2 mt-3 md:mt-0">
+                    <button onclick="openTransaction('${item.id}', 'in')" class="btn-success text-white font-medium py-2 px-3 rounded-md text-sm">
+                        ⬆️ Masuk
+                    </button>
+                    <button onclick="openTransaction('${item.id}', 'out')" class="btn-danger text-white font-medium py-2 px-3 rounded-md text-sm">
+                        ⬇️ Keluar
+                    </button>
+                    <button onclick="openMoveItem('${item.id}')" class="btn-primary text-white font-medium py-2 px-3 rounded-md text-sm">
+                        📦 Pindah
+                    </button>
+                    <button onclick="openRenameItemModal('${item.id}')" class="btn-secondary text-white font-medium py-2 px-3 rounded-md text-sm">
+                        ✏️ Ganti Nama
+                    </button>
+                    <button onclick="confirmDeleteItem('${item.id}')" class="btn-secondary text-white font-medium py-2 px-3 rounded-md text-sm">
+                        🗑️ Hapus
+                    </button>
+                  </div>
+
+            </div>
+        </div>
+    `).join('');
+}
+
+    // Confirm delete item
+    function confirmDeleteItem(itemId) {
+        const item = inventory.find(i => i.id === itemId);
+        if (!item) return;
+        
+        const confirmDiv = document.createElement('div');
+        confirmDiv.className = 'fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50';
+        confirmDiv.innerHTML = `
+            <div class="modal-content rounded-3xl p-8 max-w-md w-full">
+                <h3 class="text-xl font-bold text-gray-800 mb-4">Hapus Barang</h3>
+                <p class="text-gray-600 mb-4">Apakah Anda yakin ingin menghapus barang <strong>${item.name}</strong>?</p>
+                <p class="text-sm text-gray-500 mb-4">Kode: ${item.code} | Lokasi: ${item.location}</p>
+                <p class="text-red-600 text-sm mb-6 font-medium">⚠️ Tindakan ini tidak dapat dibatalkan!</p>
+                <div class="flex gap-4">
+                    <button onclick="this.closest('.fixed').remove()" class="btn-secondary flex-1 text-white font-medium py-2 px-4 rounded-md">
+                        Batal
+                    </button>
+                    <button onclick="deleteItem('${itemId}'); this.closest('.fixed').remove()" class="btn-danger flex-1 text-white font-medium py-2 px-4 rounded-md">
+                        Hapus
+                    </button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(confirmDiv);
+    }
+
+    // Delete item
+    async function deleteItem(itemId) {
+        const itemIndex = inventory.findIndex(i => i.id === itemId);
+        if (itemIndex === -1) return;
+        
+        await deleteInventoryItem(itemId);
+        // showNotification is already called inside deleteInventoryItem
+    }
+
+    // Open move item modal
+    function openMoveItem(itemId) {
+        const item = inventory.find(i => i.id === itemId);
+        if (!item) return;
+
+        currentMoveItem = item;
+        
+        const modal = document.getElementById('moveItemModal');
+        const quantityInput = document.getElementById('moveQuantity');
+        const locationSelect = document.getElementById('moveToLocation');
+        
+        quantityInput.max = item.stock;
+        quantityInput.value = '';
+        
+        // Remove current location from options
+        Array.from(locationSelect.options).forEach(option => {
+            option.style.display = option.value === item.location ? 'none' : 'block';
+        });
+        locationSelect.value = '';
+        
+        document.getElementById('moveNote').value = '';
+        
+        modal.classList.remove('hidden');
+        quantityInput.focus();
+    }
+
+    // Close move modal
+    document.getElementById('cancelMove').addEventListener('click', function() {
+        document.getElementById('moveItemModal').classList.add('hidden');
+        currentMoveItem = null;
+    });
+
+    // Process move item
+    document.getElementById('moveItemForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!currentMoveItem || isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+
+        const quantity = parseInt(document.getElementById('moveQuantity').value);
+        const toLocation = document.getElementById('moveToLocation').value;
+        const note = document.getElementById('moveNote').value;
+
+        if (quantity > currentMoveItem.stock) {
+            showNotification('⚠️ Jumlah melebihi stok yang tersedia!', 'error');
+            return;
+        }
+
+        // Check if item already exists in target location
+        const existingTargetItem = inventory.find(i => 
+            i.code === currentMoveItem.code && i.location === toLocation
+        );
+
+        if (existingTargetItem) {
+            // Add to existing item in target location
+            existingTargetItem.stock += quantity;
+            await updateInventoryItem(existingTargetItem.id, { stock: existingTargetItem.stock });
+            await saveTransaction(existingTargetItem.id, 'in', quantity, `Pindahan dari ${currentMoveItem.location}: ${note}`);
+        } else {
+            // Create new item in target location
+            const newItem = {
+                id: Date.now().toString(), // Temporary ID, Firebase will assign a real one
+                name: currentMoveItem.name,
+                code: currentMoveItem.code,
+                location: toLocation,
+                stock: quantity,
+                vendor: currentMoveItem.vendor, // Carry over vendor info
+                history: []
+            };
+            // Save new item, then save transaction with its new ID (or temporary if not yet assigned)
+            const newDocRef = await db.collection('inventory').add({
+                type: 'inventory',
+                name: newItem.name,
+                code: newItem.code,
+                location: newItem.location,
+                stock: newItem.stock,
+                vendor: newItem.vendor || '',
+                date: new Date().toISOString()
+            });
+            await saveTransaction(newDocRef.id, 'in', quantity, `Pindahan dari ${currentMoveItem.location}: ${note}`);
+        }
+
+        // Reduce stock from source location
+        currentMoveItem.stock -= quantity;
+        
+        if (currentMoveItem.stock === 0) {
+            // Delete item if stock becomes 0
+            await deleteInventoryItem(currentMoveItem.id);
+        } else {
+            await updateInventoryItem(currentMoveItem.id, { stock: currentMoveItem.stock });
+        }
+        
+        await saveTransaction(currentMoveItem.id, 'out', quantity, `Pindah ke ${toLocation}: ${note}`);
+        
+        document.getElementById('moveItemModal').classList.add('hidden');
+        currentMoveItem = null;
+        
+        showNotification(`✅ Berhasil memindahkan ${quantity} unit ke ${toLocation}!`, 'success');
+    });
+
+    // Sort functionality for Stock Table
+    function toggleSortOrder() {
+        sortAscending = !sortAscending;
+        const sortBtn = document.getElementById('sortOrder');
+        sortBtn.textContent = sortAscending ? '⬆️ A-Z' : '⬇️ Z-A';
+        renderStockTable();
+    }
+
+    function sortInventory(items) {
+        const sortBy = document.getElementById('sortBy').value;
+        currentSortBy = sortBy;
+        
+        return items.sort((a, b) => {
+            let aVal, bVal;
+            
+            switch(sortBy) {
+                case 'name':
+                    aVal = a.name.toLowerCase();
+                    bVal = b.name.toLowerCase();
+                    break;
+                case 'code':
+                    aVal = a.code.toLowerCase();
+                    bVal = b.code.toLowerCase();
+                    break;
+                case 'stock':
+                    aVal = a.stock;
+                    bVal = b.stock;
+                    break;
+                case 'location':
+                    aVal = a.location.toLowerCase();
+                    bVal = b.location.toLowerCase();
+                    break;
+                default:
+                    aVal = a.name.toLowerCase();
+                    bVal = b.name.toLowerCase();
+            }
+            
+            if (sortBy === 'stock') {
+                return sortAscending ? aVal - bVal : bVal - aVal;
+            } else {
+                if (sortAscending) {
+                    return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+                } else {
+                    return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+                }
+            }
+        });
+    }
+
+    // Render stock table
+    function renderStockTable() {
+    const tableBody = document.getElementById('stockTableBody');
+    const emptyState = document.getElementById('stockTableEmpty');
+    const searchTerm = document.getElementById('stockTableSearch').value.toLowerCase();
+
+    let itemsToRender = [...inventory];
+
+    if (searchTerm) {
+        itemsToRender = itemsToRender.filter(item =>
+            item.name.toLowerCase().includes(searchTerm) ||
+            item.code.toLowerCase().includes(searchTerm) ||
+            item.location.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    if (itemsToRender.length === 0) {
+        tableBody.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        if (searchTerm) {
+            emptyState.querySelector('p').textContent = 'Tidak ada barang yang cocok dengan pencarian Anda.';
+        } else {
+            emptyState.querySelector('p').textContent = 'Belum ada data stok';
+        }
+        return;
+    }
+
+    emptyState.classList.add('hidden');
+    const sortedInventory = sortInventory(itemsToRender);
+    tableBody.innerHTML = sortedInventory.map(item => `
+        <tr>
+            <td class="px-4 py-3 font-mono font-bold text-gray-800">${item.code}</td>
+            <td class="px-4 py-3 font-medium text-gray-800">${item.name}</td>
+            <td class="px-4 py-3 text-gray-600">${item.location}</td>
+             <!-- Vendor kolom tambahan -->
+            <td class="px-4 py-3 text-center">
+                <span class="font-bold text-lg ${item.stock < 2 ? 'text-red-700' : item.stock <= 5 ? 'text-orange-600' : 'text-green-600'}">${item.stock}</span>
+            </td>
+            <td class="px-4 py-3 text-center">
+                <span class="status-badge ${item.stock < 2 ? 'bg-red-100 text-red-800' : item.stock <= 5 ? 'bg-orange-100 text-orange-800' : item.stock <= 20 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}">
+                    ${item.stock < 2 ? '⚠️ Kritis' : item.stock <= 5 ? '⚠️ Rendah' : item.stock <= 20 ? '📊 Sedang' : '✅ Aman'}
+                </span>
+            </td>
+            <td class="px-4 py-3 text-center">
+                <div class="flex justify-center gap-1">
+                    <button onclick="openTransaction('${item.id}', 'in')" class="btn-success text-white font-medium py-1 px-2 rounded-md text-xs">
+                        ➕
+                    </button>
+                    <button onclick="openTransaction('${item.id}', 'out')" class="btn-danger text-white font-medium py-1 px-2 rounded-md text-xs">
+                        ➖
+                    </button>
+                  </div>
+            </td>
+        </tr>
+    `).join('');
+    }
+
+    
+    function renderSearchResults() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const resultsContainer = document.getElementById('searchResults');
+
+        if (!searchTerm) {
+            resultsContainer.innerHTML = `
+                <div class="text-center py-12 text-gray-400">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                        🔍
+                    </div>
+                    <p class="font-medium">Masukkan kata kunci untuk mencari</p>
+                </div>
+            `;
+            return;
+        }
+
+        const filteredItems = inventory.filter(item => 
+            item.name.toLowerCase().includes(searchTerm) || 
+            item.code.toLowerCase().includes(searchTerm) ||
+            item.location.toLowerCase().includes(searchTerm)
+        );
+
+        if (filteredItems.length === 0) {
+            resultsContainer.innerHTML = `
+                <div class="text-center py-12 text-gray-400">
+                    <div class="w-16 h-16 mx-auto mb-4 bg-gray-200 rounded-full flex items-center justify-center text-2xl">
+                        😔
+                    </div>
+                    <p class="font-medium">Tidak ada barang yang ditemukan</p>
+                </div>
+            `;
+            return;
+        }
+
+        resultsContainer.innerHTML = filteredItems.map(item => `
+            <div class="card p-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">${item.name}</h3>
+                        <div class="space-y-1 text-sm text-gray-600">
+                            <p><span class="font-medium">Kode:</span> <span class="font-mono font-bold text-gray-800">${item.code}</span></p>
+                            <p><span class="font-medium">Lokasi:</span> ${item.location}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold ${item.stock < 2 ? 'text-red-700' : item.stock <= 5 ? 'text-orange-600' : 'text-green-600'} mb-2">
+                            ${item.stock} unit
+                        </div>
+                        <span class="status-badge ${item.stock < 2 ? 'bg-red-100 text-red-800' : item.stock <= 5 ? 'bg-orange-100 text-orange-800' : 'bg-green-100 text-green-800'}">
+                            ${item.stock < 2 ? '⚠️ Stok Kritis' : item.stock <= 5 ? '⚠️ Stok Rendah' : '✅ Tersedia'}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // Add this function to handle stock reduction
+    function openTransaction(itemId, type) {
+        const item = inventory.find(i => i.id === itemId);
+        if (!item) return;
+
+        currentTransaction = { itemId, type };
+        
+        const modal = document.getElementById('transactionModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const amountInput = document.getElementById('transactionAmount');
+        
+        if (type === 'out') {
+            modalTitle.textContent = `Barang Keluar - ${item.name}`;
+            amountInput.max = item.stock;
+            amountInput.placeholder = 'Jumlah yang dikurangi';
+        } else {
+            modalTitle.textContent = `Barang Masuk - ${item.name}`;
+            amountInput.removeAttribute('max');
+            amountInput.placeholder = 'Jumlah yang ditambahkan';
+        }
+        
+        amountInput.value = '';
+        document.getElementById('transactionNote').value = '';
+        
+        modal.classList.remove('hidden');
+        amountInput.focus();
+    }
+
+    // Modify the transaction form submit handler
+    document.getElementById('transactionForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        if (!currentTransaction || isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+
+        const amount = parseInt(document.getElementById('transactionAmount').value);
+        const note = document.getElementById('transactionNote').value;
+        const item = inventory.find(i => i.id === currentTransaction.itemId);
+
+        if (!item) return;
+
+        if (currentTransaction.type === 'out') {
+            // Handle stock reduction
+            if (amount > item.stock) {
+                showNotification('⚠️ Jumlah melebihi stok yang tersedia!', 'error');
+                return;
+            }
+            item.stock -= amount;
+        } else {
+            // Handle stock increase
+            item.stock += amount;
+        }
+
+        await updateInventoryItem(item.id, { stock: item.stock });
+        await saveTransaction(item.id, currentTransaction.type, amount, note);
+        
+        document.getElementById('transactionModal').classList.add('hidden');
+        currentTransaction = null;
+        
+        showNotification(`✅ Stok berhasil diperbarui!`, 'success');
+    });
+
+    // Close transaction modal
+    document.getElementById('cancelTransaction').addEventListener('click', function() {
+        document.getElementById('transactionModal').classList.add('hidden');
+        currentTransaction = null;
+    });
+
+    // --- Rename Item Functions ---
+    function openRenameItemModal(itemId) {
+        const item = inventory.find(i => i.id === itemId);
+        if (!item) return;
+
+        currentRenameItem = item;
+        const modal = document.getElementById('renameItemModal');
+        const newItemNameInput = document.getElementById('newItemName');
+        
+        newItemNameInput.value = item.name;
+        
+        modal.classList.remove('hidden');
+        newItemNameInput.focus();
+    }
+
+    document.getElementById('cancelRename').addEventListener('click', function() {
+        document.getElementById('renameItemModal').classList.add('hidden');
+        currentRenameItem = null;
+    });
+
+    document.getElementById('renameItemForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        if (!currentRenameItem || isLoading || !sdkInitialized) {
+            showNotification('⚠️ Database belum siap. Silakan tunggu sebentar atau periksa koneksi.', 'warning');
+            return;
+        }
+
+        const newName = document.getElementById('newItemName').value.trim();
+
+        if (!newName) {
+            showNotification('⚠️ Nama barang tidak boleh kosong!', 'error');
+            return;
+        }
+
+        if (newName === currentRenameItem.name) {
+            showNotification('ℹ️ Nama barang tidak berubah.', 'warning');
+            document.getElementById('renameItemModal').classList.add('hidden');
+            currentRenameItem = null;
+            return;
+        }
+
+        await updateInventoryItem(currentRenameItem.id, { name: newName });
+        
+        document.getElementById('renameItemModal').classList.add('hidden');
+        currentRenameItem = null;
+        showNotification(`✅ Nama barang berhasil diganti menjadi \"${newName}\"!`, 'success');
+    });
+    // --- End Rename Item Functions ---
+
+    // --- NEW: Reports Functions ---
+    const reportDateRangeSelect = document.getElementById('reportDateRange');
+    const reportStartDateInput = document.getElementById('reportStartDate');
+    const reportEndDateInput = document.getElementById('reportEndDate');
+    const averageOutflowSearchInput = document.getElementById('averageOutflowSearchInput');
+    const averageOutflowSortBySelect = document.getElementById('averageOutflowSortBy');
+    const averageOutflowSortOrderBtn = document.getElementById('averageOutflowSortOrder');
+
+
+    function getDatesForRange(range) {
+        const now = new Date();
+        now.setHours(0, 0, 0, 0); // Normalize to start of day
+        let startDate = new Date(now);
+        let endDate = new Date(now);
+
+        switch (range) {
+            case 'last7days':
+                startDate.setDate(now.getDate() - 6); // 7 days including today
+                break;
+            case 'last30days':
+                startDate.setDate(now.getDate() - 29); // 30 days including today
+                break;
+            case 'thisMonth':
+                startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+                endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0); // Last day of current month
+                break;
+            case 'lastMonth':
+                startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+                endDate = new Date(now.getFullYear(), now.getMonth(), 0); // Last day of previous month
+                break;
+            case 'allTime':
+                startDate = new Date(0); // Epoch
+                endDate = new Date(); // Current moment
+                break;
+            default: // Custom range or default to last 7 days
+                startDate.setDate(now.getDate() - 6);
+        }
+        
+        // If custom dates are set, override
+        if (reportStartDateInput.value) {
+            startDate = new Date(reportStartDateInput.value);
+            startDate.setHours(0, 0, 0, 0);
+        }
+        if (reportEndDateInput.value) {
+            endDate = new Date(reportEndDateInput.value);
+            endDate.setHours(23, 59, 59, 999); // End of selected day
+        } else if (range !== 'allTime') {
+             endDate.setHours(23, 59, 59, 999); // Ensure end of day for non-allTime ranges
+        }
+
+        return { startDate, endDate };
+    }
+
+    function renderReportsSection() {
+        const selectedRange = reportDateRangeSelect.value;
+        let { startDate, endDate } = getDatesForRange(selectedRange);
+
+        // If custom dates are explicitly set, use them
+        if (reportStartDateInput.value && reportEndDateInput.value) {
+            startDate = new Date(reportStartDateInput.value);
+            startDate.setHours(0, 0, 0, 0);
+            endDate = new Date(reportEndDateInput.value);
+            endDate.setHours(23, 59, 59, 999);
+        } else {
+            // Update date inputs to reflect selected range (if not custom)
+            reportStartDateInput.value = startDate.toISOString().split('T')[0];
+            reportEndDateInput.value = endDate.toISOString().split('T')[0];
+        }
+
+
+        const filteredTransactions = allData.filter(record => {
+            if (record.type !== 'transaction') return false;
+            const transactionDate = new Date(record.date);
+            return transactionDate >= startDate && transactionDate <= endDate;
+        }).sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort descending by date
+
+        renderTransactionHistory(filteredTransactions);
+        updateReportSummary(filteredTransactions); // Removed startDate, endDate as global daily average is removed
+        renderAverageOutflowPerItem(filteredTransactions); // Call for per-item average
+    }
+
+    function renderTransactionHistory(transactions) {
+        const tableBody = document.getElementById('transactionHistoryBody');
+        const noTransactions = document.getElementById('noTransactions');
+        tableBody.innerHTML = '';
+
+        if (transactions.length === 0) {
+            noTransactions.classList.remove('hidden');
+            return;
+        }
+        noTransactions.classList.add('hidden');
+
+        transactions.forEach(transaction => {
+            const item = inventory.find(i => i.id === transaction.item_id);
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-4 py-3 text-gray-600">${new Date(transaction.date).toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                <td class="px-4 py-3 font-medium text-gray-800">${item ? item.name : 'Barang Dihapus'}</td>
+                <td class="px-4 py-3 font-mono text-gray-700">${item ? item.code : 'N/A'}</td>
+                <td class="px-4 py-3 text-gray-600">${item ? item.location : 'N/A'}</td>
+                <td class="px-4 py-3 text-center">
+                    <span class="status-badge ${transaction.transaction_type === 'in' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}">
+                        ${transaction.transaction_type === 'in' ? 'Masuk' : 'Keluar'}
+                    </span>
+                </td>
+                <td class="px-4 py-3 text-center font-bold">${transaction.amount}</td>
+                <td class="px-4 py-3 text-gray-600">${transaction.note || '-'}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    function updateReportSummary(transactions) { // Removed startDate, endDate
+        let totalInflow = 0;
+        let totalOutflow = 0;
+
+        transactions.forEach(t => {
+            if (t.transaction_type === 'in') {
+                totalInflow += t.amount;
+            } else if (t.transaction_type === 'out') {
+                totalOutflow += t.amount;
+            }
+        });
+
+        document.getElementById('totalInflow').textContent = totalInflow;
+        document.getElementById('totalOutflow').textContent = totalOutflow;
+
+        // Removed averageDailyOutflow calculation and display
+    }
+
+    // NEW: Function to render average outflow per item
+    function renderAverageOutflowPerItem(transactions) {
+        const tableBody = document.getElementById('averageOutflowPerItemBody');
+        const noAverageOutflow = document.getElementById('noAverageOutflow');
+        tableBody.innerHTML = '';
+
+        const itemOutflowMap = new Map(); // Map: item_code -> { totalOut: X, name: Y }
+
+        transactions.forEach(t => {
+            if (t.transaction_type === 'out') {
+                const item = inventory.find(i => i.id === t.item_id);
+                if (item) {
+                    const itemCode = item.code;
+                    if (!itemOutflowMap.has(itemCode)) {
+                        itemOutflowMap.set(itemCode, { totalOut: 0, name: item.name });
+                    }
+                    itemOutflowMap.get(itemCode).totalOut += t.amount;
+                }
+            }
+        });
+
+        let itemsToRender = Array.from(itemOutflowMap.entries()).map(([code, data]) => ({
+            code: code,
+            name: data.name,
+            totalOut: data.totalOut
+        }));
+
+        // Apply search filter
+        const searchTerm = reportsSearchTerm.toLowerCase();
+        if (searchTerm) {
+            itemsToRender = itemsToRender.filter(item =>
+                item.name.toLowerCase().includes(searchTerm) ||
+                item.code.toLowerCase().includes(searchTerm)
+            );
+        }
+
+        // Apply sort
+        itemsToRender.sort((a, b) => {
+            let aVal, bVal;
+            switch(reportsSortBy) {
+                case 'name':
+                    aVal = a.name.toLowerCase();
+                    bVal = b.name.toLowerCase();
+                    break;
+                case 'code':
+                    aVal = a.code.toLowerCase();
+                    bVal = b.code.toLowerCase();
+                    break;
+                case 'totalOut':
+                    aVal = a.totalOut;
+                    bVal = b.totalOut;
+                    break;
+                default:
+                    aVal = a.name.toLowerCase();
+                    bVal = b.name.toLowerCase();
+            }
+
+            if (reportsSortBy === 'totalOut') {
+                return reportsSortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+            } else {
+                if (reportsSortOrder === 'asc') {
+                    return aVal < bVal ? -1 : aVal > bVal ? 1 : 0;
+                } else {
+                    return aVal > bVal ? -1 : aVal < bVal ? 1 : 0;
+                }
+            }
+        });
+
+        if (itemsToRender.length === 0) {
+            noAverageOutflow.classList.remove('hidden');
+            return;
+        }
+        noAverageOutflow.classList.add('hidden');
+
+        itemsToRender.forEach(data => {
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="px-4 py-3 font-mono font-bold text-gray-800">${data.code}</td>
+                <td class="px-4 py-3 font-medium text-gray-800">${data.name}</td>
+                <td class="px-4 py-3 text-center font-bold">${data.totalOut}</td>
+            `;
+            tableBody.appendChild(row);
+        });
+    }
+
+    // Toggle sort order for Average Outflow Per Item table
+    function toggleAverageOutflowSortOrder() {
+        reportsSortOrder = (reportsSortOrder === 'asc') ? 'desc' : 'asc';
+        averageOutflowSortOrderBtn.textContent = reportsSortOrder === 'asc' ? '⬆️ A-Z' : '⬇️ Z-A';
+        renderReportsSection();
+    }
+
+    // Event listeners for date range filters
+    reportDateRangeSelect.addEventListener('change', function() {
+        // Clear custom date inputs when a preset range is selected
+        reportStartDateInput.value = '';
+        reportEndDateInput.value = '';
+        renderReportsSection();
+    });
+    reportStartDateInput.addEventListener('change', function() {
+        reportDateRangeSelect.value = 'custom'; // Indicate custom range
+        renderReportsSection();
+    });
+    reportEndDateInput.addEventListener('change', function() {
+        reportDateRangeSelect.value = 'custom'; // Indicate custom range
+        renderReportsSection();
+    });
+
+    // Event listeners for Average Outflow Per Item table search and sort
+    averageOutflowSearchInput.addEventListener('input', debounce(function() {
+        reportsSearchTerm = this.value;
+        renderReportsSection();
+    }, 300));
+
+    averageOutflowSortBySelect.addEventListener('change', function() {
+        reportsSortBy = this.value;
+        renderReportsSection();
+    });
+    // --- END NEW: Reports Functions ---
+
+    // Render all sections (now only renders the active one)
+    function renderAllSections() {
+        // This function is now effectively replaced by renderActiveSection
+        // but kept for clarity if other parts of the app might call it.
+        renderActiveSection();
+    }
+
+    // New function to render only the currently active section
+    function renderActiveSection() {
+        const inventorySection = document.getElementById('inventorySection');
+        const searchSection = document.getElementById('searchSection');
+        const stockTableSection = document.getElementById('stockTableSection');
+        const reportsSection = document.getElementById('reportsSection'); // NEW
+
+        if (!inventorySection.classList.contains('hidden')) {
+            filterInventory(); // This already handles rendering inventory
+        } else if (!searchSection.classList.contains('hidden')) {
+            renderSearchResults();
+        } else if (!stockTableSection.classList.contains('hidden')) {
+            renderStockTable();
+        } else if (!reportsSection.classList.contains('hidden')) { // NEW
+            renderReportsSection();
+        }
+    }
+
+    // Notification system
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        let bgColor = 'stats-card-orange';
+        let icon = '⚠️';
+        
+        if (type === 'success') {
+            bgColor = 'stats-card-green';
+            icon = '✅';
+        }
+        if (type === 'warning') {
+            bgColor = 'stats-card-orange';
+            icon = '⚠️';
+        }
+        if (type === 'error') {
+            bgColor = 'bg-gradient-to-r from-red-500 to-red-600'; // Changed for error
+            icon = '❌';
+        }
+        
+        notification.className = `notification fixed top-6 right-6 px-6 py-4 rounded-2xl shadow-2xl z-50 ${bgColor} text-white font-semibold max-w-sm transform translate-x-full transition-transform duration-300`;
+        notification.innerHTML = `
+            <div class="flex items-center space-x-3">
+                <div class="text-2xl">${icon}</div>
+                <div class="flex-1">
+                    <p class="text-sm leading-relaxed">${message}</p>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(notification);
+        
+        // Animate in
+        setTimeout(() => {
+            notification.classList.remove('translate-x-full');
+        }, 100);
+        
+        // Animate out and remove
+        setTimeout(() => {
+            notification.classList.add('translate-x-full');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, type === 'warning' ? 5000 : 3000);
+    }
+
+    // Add debounce function
+    function debounce(func, delay) {
+        let timeout;
+        return function(...args) {
+            const context = this;
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(context, args), delay);
+        };
+    }
+
+    // Add event listeners for sorting
+    document.getElementById('sortBy').addEventListener('change', renderStockTable);
+    // document.getElementById('stockTableSearch').addEventListener('input', renderStockTable); // Replaced with debounced version below
+
+    // Update current date time
+    function updateDateTime() {
+        const now = new Date();
+        const options = { 
+            weekday: 'long', 
+            year: 'numeric', 
+            month: 'long', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        };
+        const dateTimeElement = document.getElementById('currentDateTime');
+        if (dateTimeElement) {
+            dateTimeElement.textContent = now.toLocaleDateString('id-ID', options);
+        }
+    }
+
+    // Initialize application with faster loading
+    document.addEventListener('DOMContentLoaded', function() {
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+        
+        // Tambah tombol ekspor saja (tanpa tombol hapus data)
+        const headerDiv = document.querySelector('.flex.items-center.space-x-4');
+        if (headerDiv) {
+            const exportBtn = document.createElement('button');
+            exportBtn.textContent = '📊 Ekspor Database';
+            exportBtn.className = 'text-xs text-white text-opacity-60 hover:text-white transition-all duration-200 font-medium bg-white bg-opacity-10 px-3 py-1 rounded-full';
+            exportBtn.onclick = exportAllDataToCSV;
+            headerDiv.appendChild(exportBtn);
+        }
+        
+        // Apply debounce to search inputs
+        document.getElementById('searchInput').addEventListener('input', debounce(renderSearchResults, 300));
+        document.getElementById('inventorySearchInput').addEventListener('input', debounce(filterInventory, 300));
+        document.getElementById('stockTableSearch').addEventListener('input', debounce(renderStockTable, 300));
+
+        // Set default date range for reports on load
+        const now = new Date();
+        const sevenDaysAgo = new Date(now);
+        sevenDaysAgo.setDate(now.getDate() - 6);
+        reportStartDateInput.value = sevenDaysAgo.toISOString().split('T')[0];
+        reportEndDateInput.value = now.toISOString().split('T')[0];
+        reportDateRangeSelect.value = 'last7days';
+
+        // Initialize Firebase in background==
+        setTimeout(() => {
+            initializeFirebase();
+        }, 100);
+    });
+</script>
+</body>
+</html>
